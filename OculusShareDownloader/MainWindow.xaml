@@ -5,9 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusShareDownloader"
         mc:Ignorable="d"
-        Title="MainWindow" Height="253.2" Width="437.6" Loaded="Window_Loaded">
+        Title="MainWindow" Height="481.366" Width="688.896" Loaded="Window_Loaded">
     <Grid>
-        <Button Content="Button" Margin="170,57,0,0" HorizontalAlignment="Left" Width="75" Height="19" VerticalAlignment="Top"/>
+        <Button Content="更新" Margin="135,41,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
+        <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
+            <ComboBoxItem Content="-"/>
+        </ComboBox>
+        <Label Content="ターゲット デバイス" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <DataGrid x:Name="dataGrid" Margin="10,89,10,10" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Path=IsChecked}" Header="✔"/>
+                <DataGridTextColumn Binding="{Binding Path=FilePath}" Header="ファイル名"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </Window>

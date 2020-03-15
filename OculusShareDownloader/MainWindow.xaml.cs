@@ -37,6 +37,51 @@ namespace OculusShareDownloader
             }
         }
 
+        #region events
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // 更新前のデバイスが更新後も存在するなら、そのデバイスを選択したままにする
+            var prevSelectedItem = comboBox_Devices.SelectedItem;
+
+            if (comboBox_Devices.ItemsSource == null)
+            {
+                comboBox_Devices.Items.Clear();
+            }
+            else
+            {
+                comboBox_Devices.ItemsSource = null;
+            }
+
+            var source = GetDevicesItemSource();
+            comboBox_Devices.ItemsSource = source;
+            if (source[0] != "-")
+            {
+                if (comboBox_Devices.Items.Contains(prevSelectedItem))
+                {
+                    comboBox_Devices.SelectedItem = prevSelectedItem;
+                }
+                else
+                {
+                    comboBox_Devices.SelectedIndex = 0;
+                }
+            }
+        }
+
+        private void ComboBox_Devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var control = e.Source as ComboBox;
+            var item = control.SelectedItem == null ? "null" : control.SelectedItem.ToString();
+            Console.WriteLine("SelectionChanged: " + item);
+
+            if (((ComboBox)e.Source).SelectedItem != null && dataGrid != null)
+            {
+                UpdateDataGrid();
+            }
+        }
+
+        #endregion
+
         private string GetDeviceNameTest()
         {
             Console.WriteLine("Get device names...");
@@ -60,6 +105,7 @@ namespace OculusShareDownloader
                 Console.WriteLine(lines[i]);
             }
         }
+
         private void GetVideoshotsTest(string deviceName = "")
         {
             Console.WriteLine("Get videoshots...");
@@ -70,5 +116,41 @@ namespace OculusShareDownloader
             }
         }
 
+        private string[] GetDevicesItemSource()
+        {
+            string[] devices = Downloader.GetDevices();
+            string[] source;
+            if (devices.Length != 0)
+                source = devices;
+            else
+                source = new string[1] { "-" };
+            return source;
+        }
+
+        private void UpdateDataGrid()
+        {
+            // 消す
+            if (dataGrid.ItemsSource == null)
+                dataGrid.Items.Clear();
+            else
+                dataGrid.ItemsSource = null;
+
+            string deviceName = comboBox_Devices.SelectedItem.ToString();
+            if (deviceName == "-")
+                return;
+
+            // 入れる
+            var videoshots = Downloader.GetFiles(Downloader.PATH_VIDEOSHOTS, deviceName);
+            for (int i = 0; i < videoshots.Length; i++)
+            {
+                dataGrid.Items.Add(new FileSelect() { IsChecked = false, FilePath = videoshots[i] });
+            }
+        }
+
+        public class FileSelect
+        {
+            public bool IsChecked { get; set; }
+            public string FilePath { get; set; }
+        }
     }
 }
