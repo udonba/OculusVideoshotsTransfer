@@ -8,7 +8,7 @@ using static OculusShareDownloader.Extension;
 
 namespace OculusShareDownloader
 {
-    public class Downloader
+    public static class Downloader
     {
         public const string PATH_SCREENSHOTS = "/sdcard/oculus/screenshots/";
         public const string PATH_VIDEOSHOTS = "/sdcard/oculus/videoshots/";
