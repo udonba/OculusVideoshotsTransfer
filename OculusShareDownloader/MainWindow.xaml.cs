@@ -134,14 +134,8 @@ namespace OculusShareDownloader
             string deviceName = comboBox_Devices.SelectedItem.ToString();
             if (deviceName == "-")
                 return;
-
-
-            // 入れる
-            var videoshots = Downloader.GetFiles(Downloader.PATH_VIDEOSHOTS, deviceName);
-            var screenshots = Downloader.GetFiles(Downloader.PATH_SCREENSHOTS, deviceName);
-            var array = new string[videoshots.Length + screenshots.Length];
-            Array.Copy(videoshots, 0, array, 0, videoshots.Length);
-            Array.Copy(screenshots, 0, array, videoshots.Length, screenshots.Length);
+            
+            var array = Downloader.GetAllFiles();
 
             var data = new Data[array.Length];
             for (int i = 0; i < array.Length; i++)
