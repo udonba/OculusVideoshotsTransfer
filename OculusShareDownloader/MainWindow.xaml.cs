@@ -135,13 +135,17 @@ namespace OculusShareDownloader
             if (deviceName == "-")
                 return;
             
+            // ファイル名一覧をDataGrid用に変換
             var array = Downloader.GetAllFiles();
-
             var data = new Data[array.Length];
             for (int i = 0; i < array.Length; i++)
             {
-                data[i] = new Data(false, array[i]);
+                data[i] = new Data(array[i]);
             }
+
+            // 日時降順ソート
+            Array.Sort(data, Data.CompareByDateStringDesc);
+
             dataGrid.ItemsSource = data;
         }
     }

@@ -81,42 +81,7 @@ namespace OculusShareDownloader
             Array.Copy(videos, 0, array, 0, videos.Length);
             Array.Copy(screens, 0, array, videos.Length, screens.Length);
 
-            // 日付降順
-            Array.Sort(array, CompareByDateStringDesc);
-
             return array;
-        }
-
-        /// <summary>
-        /// ファイル名に含まれる日時で降順ソート
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        public static int CompareByDateStringDesc(string a, string b)
-        {
-            // ファイル名から日付を抽出
-            var da = ConvertToDate(a);
-            var db = ConvertToDate(b);
-
-            //文字列の長さを比較する
-            return -DateTime.Compare(da, db);
-        }
-
-        /// <summary>
-        /// ファイル名を日時に変換
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        private static DateTime ConvertToDate(string fileName)
-        {
-            string[] s = System.IO.Path.GetFileNameWithoutExtension(fileName).Split('-');
-            if (s.Length == 3 && DateTime.TryParseExact(s[1] + s[2], "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out DateTime date))
-            {
-                Console.WriteLine(string.Format("[{0}] -> [{1}]", fileName, date));
-                return date;
-            }
-            return new DateTime();
         }
     }
 }
