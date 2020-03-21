@@ -35,6 +35,8 @@ namespace OculusShareDownloader
                 GetScreenshotsTest(name);
                 GetVideoshotsTest(name);
             }
+
+            Button_Click(button_UpdateDevices, new RoutedEventArgs());
         }
 
         #region events
@@ -129,28 +131,24 @@ namespace OculusShareDownloader
 
         private void UpdateDataGrid()
         {
-            // 消す
-            if (dataGrid.ItemsSource == null)
-                dataGrid.Items.Clear();
-            else
-                dataGrid.ItemsSource = null;
-
             string deviceName = comboBox_Devices.SelectedItem.ToString();
             if (deviceName == "-")
                 return;
 
+
             // 入れる
             var videoshots = Downloader.GetFiles(Downloader.PATH_VIDEOSHOTS, deviceName);
-            for (int i = 0; i < videoshots.Length; i++)
-            {
-                dataGrid.Items.Add(new FileSelect() { IsChecked = false, FilePath = videoshots[i] });
-            }
-        }
+            var screenshots = Downloader.GetFiles(Downloader.PATH_SCREENSHOTS, deviceName);
+            var array = new string[videoshots.Length + screenshots.Length];
+            Array.Copy(videoshots, 0, array, 0, videoshots.Length);
+            Array.Copy(screenshots, 0, array, videoshots.Length, screenshots.Length);
 
-        public class FileSelect
-        {
-            public bool IsChecked { get; set; }
-            public string FilePath { get; set; }
+            var data = new Data[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                data[i] = new Data(false, array[i]);
+            }
+            dataGrid.ItemsSource = data;
         }
     }
 }

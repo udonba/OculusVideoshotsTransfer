@@ -1,21 +1,21 @@
-﻿<Window x:Class="OculusShareDownloader.MainWindow"
+﻿<Window x:Name="window" x:Class="OculusShareDownloader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusShareDownloader"
         mc:Ignorable="d"
-        Title="MainWindow" Height="481.366" Width="688.896" Loaded="Window_Loaded">
+        Title="MainWindow" Height="481.366" Width="435" Loaded="Window_Loaded">
     <Grid>
-        <Button Content="更新" Margin="135,41,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button x:Name="button_UpdateDevices" Content="更新" Margin="135,41,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
         <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
             <ComboBoxItem Content="-"/>
         </ComboBox>
         <Label Content="ターゲット デバイス" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
-        <DataGrid x:Name="dataGrid" Margin="10,89,10,10" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+        <DataGrid x:Name="dataGrid" Margin="10,89,10.8,10" VerticalScrollBarVisibility="Visible" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Path=IsChecked}" Header="✔"/>
-                <DataGridTextColumn Binding="{Binding Path=FilePath}" Header="ファイル名"/>
+                <DataGridTextColumn Binding="{Binding FileType}" Header="種別" MinWidth="75" Width="75"/>
+                <DataGridTextColumn Binding="{Binding FileName}" Header="ファイル名" MinWidth="300" Width="300"/>
             </DataGrid.Columns>
         </DataGrid>
 
