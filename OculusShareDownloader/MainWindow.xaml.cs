@@ -101,7 +101,7 @@ namespace OculusShareDownloader
         private void GetScreenshotsTest(string deviceName = "")
         {
             Console.WriteLine("Get screenshots...");
-            var lines = Downloader.GetFiles(Downloader.PATH_SCREENSHOTS, deviceName);
+            var lines = Downloader.GetFiles(Downloader.ScreenshotsDirectoryPath, deviceName);
             for (int i = 0; i < lines.Length; i++)
             {
                 Console.WriteLine(lines[i]);
@@ -111,7 +111,7 @@ namespace OculusShareDownloader
         private void GetVideoshotsTest(string deviceName = "")
         {
             Console.WriteLine("Get videoshots...");
-            var lines = Downloader.GetFiles(Downloader.PATH_VIDEOSHOTS, deviceName);
+            var lines = Downloader.GetFiles(Downloader.VideoshotsDirectoryPath, deviceName);
             for (int i = 0; i < lines.Length; i++)
             {
                 Console.WriteLine(lines[i]);
@@ -134,7 +134,7 @@ namespace OculusShareDownloader
             string deviceName = comboBox_Devices.SelectedItem.ToString();
             if (deviceName == "-")
                 return;
-            
+
             // ファイル名一覧をDataGrid用に変換
             var array = Downloader.GetAllFiles();
             var data = new Data[array.Length];
@@ -148,5 +148,46 @@ namespace OculusShareDownloader
 
             dataGrid.ItemsSource = data;
         }
+
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DownloadSelectedFile();
+        }
+
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key.Equals(Key.Enter)) || (e.Key.Equals(Key.Return)))
+            {
+                e.Handled = true;
+
+                DownloadSelectedFile();
+            }
+        }
+
+        private async void DownloadSelectedFile()
+        {
+            
+            string[] files = new string[dataGrid.SelectedItems.Count];
+
+            for (int i = 0; i < dataGrid.SelectedItems.Count; i++)
+            {
+                var data = (Data)dataGrid.SelectedItems[i];
+                files[i] = data.FilePath;
+            }
+
+            Console.WriteLine("---------------------------------------------");
+            for (int i = 0; i < files.Length; i++)
+            {
+                Console.WriteLine(string.Format("TargetFiles[{0}]: {1}", i, files[i]));
+            }
+
+            Console.WriteLine(string.Format("Start downloading... ({0} files)", files.Length));
+
+            await Downloader.DownloadFiles(files);
+
+            Console.WriteLine("Download done.");
+
+        }
+
     }
 }

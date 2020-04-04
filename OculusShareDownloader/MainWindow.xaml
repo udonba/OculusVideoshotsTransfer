@@ -12,7 +12,7 @@
             <ComboBoxItem Content="-"/>
         </ComboBox>
         <Label Content="ターゲット デバイス" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
-        <DataGrid x:Name="dataGrid" Margin="10,89,10.8,10" VerticalScrollBarVisibility="Visible" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid x:Name="dataGrid" Margin="10,89,10.8,10" VerticalScrollBarVisibility="Visible" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" PreviewKeyDown="DataGrid_PreviewKeyDown">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding FileType}" Header="種別" MinWidth="75" Width="75"/>
                 <DataGridTextColumn Binding="{Binding FileName}" Header="ファイル名" MinWidth="300" Width="300"/>
