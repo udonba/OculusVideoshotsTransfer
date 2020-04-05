@@ -1,4 +1,4 @@
-# OculusShareFileTransfer
+# OculusVideoshotsTransfer
 OculusQuestのScreenshots, Videoshotsのファイル転送を開発者モードのままGUIで簡単にやるツール  
 adbコマンドが使える環境であることが必要
 
