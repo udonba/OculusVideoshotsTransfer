@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusShareDownloader"
         mc:Ignorable="d"
-        Title="MainWindow" Height="481.366" Width="596.255" Loaded="Window_Loaded">
+        Title="MainWindow" Height="481.366" Width="552.255" Loaded="Window_Loaded">
     <Grid>
         <Button x:Name="button_UpdateDevices" Content="更新" Margin="135,36,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
         <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
@@ -19,7 +19,7 @@
                 <DataGridTextColumn Binding="{Binding Date, StringFormat=yyyy/MM/dd hh:mm:ss}" Header="日時"/>
             </DataGrid.Columns>
         </DataGrid>
-        <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="22" Margin="478,36,0,0" VerticalAlignment="Top" Width="100"/>
+        <ProgressBar x:Name="progressBar" Height="22" Margin="0,36,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100"/>
 
 
     </Grid>
