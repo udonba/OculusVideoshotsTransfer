@@ -183,10 +183,24 @@ namespace OculusShareDownloader
 
             Console.WriteLine(string.Format("Start downloading... ({0} files)", files.Length));
 
+            SetControllsInProgress(true);
+
             await Downloader.DownloadFiles(files);
+
+            SetControllsInProgress(false);
 
             Console.WriteLine("Download done.");
 
+        }
+
+        private void SetControllsInProgress(bool inProgress)
+        {
+            this.comboBox_Devices.IsEnabled = !inProgress;
+            this.button_UpdateDevices.IsEnabled = !inProgress;
+            this.dataGrid.IsEnabled = !inProgress;
+
+            this.progressBar.IsEnabled = inProgress;
+            this.progressBar.IsIndeterminate = inProgress;
         }
 
     }
