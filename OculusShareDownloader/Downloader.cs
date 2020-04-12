@@ -14,8 +14,13 @@ namespace OculusShareDownloader
         public const string ScreenshotsDirectoryPath = "/sdcard/oculus/screenshots/";
         public const string VideoshotsDirectoryPath = "/sdcard/oculus/videoshots/";
 
-        public const string DefaultDownloadDirectoryPath = "D:/Downloads/";
-        
+        public const string DefaultSaveDirectoryPath = "D:/Downloads";
+
+        /// <summary>
+        /// フォルダ選択ダイアログの初期ディレクトリ
+        /// </summary>
+        public static readonly string DefaulFolderSelectDirectry = Environment.SpecialFolder.DesktopDirectory.ToString();
+
         public static string GetCmdOutput(string exe, string arg)
         {
 #if DEBUG
@@ -57,21 +62,24 @@ namespace OculusShareDownloader
         /// ファイルをダウンロードする
         /// </summary>
         /// <param name="files"></param>
-        public static async Task DownloadFiles(string[] files)
+        public static async Task DownloadFiles(IProgress<int> progress, string[] files, string saveDirectory)
         {
+            string[] dstPath = new string[files.Length];
             for (int i = 0; i < files.Length; i++)
             {
-                await DownloadFile(files[i]);
+                var fileName = Path.GetFileName(files[i]);
+                dstPath[i] = $"{saveDirectory}/{fileName}";
+            }
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                progress.Report(i + 1);
+                await DownloadFile(files[i], dstPath[i]);
             }
         }
 
-        private static async Task DownloadFile(string srcPath, string dstPath = "")
+        private static async Task DownloadFile(string srcPath, string dstPath)
         {
-            if (dstPath == "")
-            {
-                dstPath = DefaultDownloadDirectoryPath + Path.GetFileName(srcPath);
-            }
-
             var tcs = new TaskCompletionSource<int>();
             ProcessStartInfo info = new ProcessStartInfo()
             {
@@ -118,6 +126,18 @@ namespace OculusShareDownloader
                 paths[i] = directory + lines[i];
             }
             return paths;
+        }
+
+        /// <summary>
+        /// 指定ファイルを選択した状態でフォルダを開く
+        /// </summary>
+        /// <param name="filePath"></param>
+        public static void OpenDirectory(string filePath)
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "explorer.exe";
+            p.StartInfo.Arguments = string.Format("/select,\"{0}\"", filePath.ReplaceSeparatorChar(false));
+            p.Start();
         }
 
         /// <summary>
