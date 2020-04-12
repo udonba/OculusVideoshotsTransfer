@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="481.366" Width="552.255" Loaded="Window_Loaded">
     <Grid>
-        <Button x:Name="button_UpdateDevices" Content="更新" Margin="135,36,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
-        <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
+        <Button x:Name="button_UpdateDevices" Content="更新" Margin="146,36,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
+        <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="131" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
             <ComboBoxItem Content="-"/>
         </ComboBox>
         <Label Content="ターゲット デバイス" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
