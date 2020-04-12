@@ -34,5 +34,17 @@ namespace OculusShareDownloader
             deviceName = s[0];
             return true;
         }
+        
+        public static string ReplaceSeparatorChar(this string str, bool replaceToSlash)
+        {
+            if (replaceToSlash)
+            {
+                return str.Replace(@"\", "/");
+            }
+            else
+            {
+                return str.Replace("/", @"\");
+            }
+        }
     }
 }
