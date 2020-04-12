@@ -1,14 +1,14 @@
 # OculusVideoshotsTransfer
-OculusQuestのScreenshots, Videoshotsのファイル転送を開発者モードのままGUIで簡単にやるツール  
+OculusQuestのScreenshots, Videoshotsのファイル転送を開発者モードのままGUIで簡単にやる開発補助用ツール  
 adbコマンドが使える環境であることが必要
 
-# できること
-- OculusQuestのScreenshots, Videoshotsのファイル一覧の表示  
-（adb devices コマンドの実行結果の表示）
-- Screenshots, VideoshotsのファイルをPCに転送  
-（adb pull コマンドの実行）
+![image](https://user-images.githubusercontent.com/41992866/79074818-6c295280-7d29-11ea-874b-49f368b855ee.png)
 
-![image](https://user-images.githubusercontent.com/41992866/78470245-dc9d0600-7762-11ea-8755-b2287c32fa07.png)
+# Release
+https://github.com/udonba/OculusVideoshotsTransfer/releases/latest
 
-# その他
-- ファイルの保存先フォルダは D:/Downloads
+# 使い方
+1. アプリ起動
+1. （必要なら）デバイスを選択
+1. （必要なら）保存先のフォルダを選択
+1. 任意のファイルを選んで、Enterキーまたはダブルクリックでファイル転送開始
