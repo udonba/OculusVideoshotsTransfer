@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace OculusShareDownloader
 {
@@ -71,16 +70,18 @@ namespace OculusShareDownloader
         /// <param name="e"></param>
         private void Button_Browse_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new CommonOpenFileDialog("ファイルを保存するフォルダを選択");
-            dialog.Multiselect = false;
-            dialog.DefaultDirectory = Downloader.DefaulFolderSelectDirectry;
-            dialog.IsFolderPicker = true;
+            var dialog = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description = "ファイルを保存するフォルダを選択",
+                SelectedPath = Downloader.DefaulFolderSelectDirectry,
+                ShowNewFolderButton = true
+            };
 
-            if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
 
             // 選択したフォルダパスを表示
-            this.textBox_Path.Text = dialog.FileName.ReplaceSeparatorChar(replaceToSlash: true);
+            this.textBox_Path.Text = dialog.SelectedPath.ReplaceSeparatorChar(replaceToSlash: true);
             this.textBox_Path.Focus();
             this.textBox_Path.Select(textBox_Path.Text.Length, 0);
         }
