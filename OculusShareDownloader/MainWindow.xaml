@@ -7,19 +7,23 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="481.366" Width="552.255" Loaded="Window_Loaded">
     <Grid>
-        <Button x:Name="button_UpdateDevices" Content="更新" Margin="135,36,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
-        <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
+        <Button x:Name="button_UpdateDevices" Content="更新" Margin="146,36,0,0" HorizontalAlignment="Left" Width="75" Height="22" VerticalAlignment="Top" Click="Button_Click"/>
+        <ComboBox x:Name="comboBox_Devices" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="131" SelectedIndex="0" SelectionChanged="ComboBox_Devices_SelectionChanged">
             <ComboBoxItem Content="-"/>
         </ComboBox>
         <Label Content="ターゲット デバイス" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
-        <DataGrid x:Name="dataGrid" Margin="10,63,10,10" VerticalScrollBarVisibility="Visible" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" PreviewKeyDown="DataGrid_PreviewKeyDown">
+        <DataGrid x:Name="dataGrid" Margin="10,63,10,37" VerticalScrollBarVisibility="Visible" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" PreviewKeyDown="DataGrid_PreviewKeyDown">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding FileType}" Header="種別" MinWidth="75" Width="75"/>
                 <DataGridTextColumn Binding="{Binding FileName}" Header="ファイル名" MinWidth="300" Width="300"/>
-                <DataGridTextColumn Binding="{Binding Date, StringFormat=yyyy/MM/dd hh:mm:ss}" Header="日時"/>
+                <DataGridTextColumn Binding="{Binding Date, StringFormat=yyyy/MM/dd HH:mm:ss}" Header="日時"/>
             </DataGrid.Columns>
         </DataGrid>
-        <ProgressBar x:Name="progressBar" Height="22" Margin="0,36,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100"/>
+        <ProgressBar x:Name="progressBar" Margin="0,0,10,10" HorizontalAlignment="Right" Width="100" Height="15" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="textBox_Path" Height="22" Margin="0,36,90,0" Text="Path" VerticalAlignment="Top" HorizontalAlignment="Right" Width="209"/>
+        <Button x:Name="button_Browse" Content="参照…" Margin="0,36,10,0" Height="22" VerticalAlignment="Top" Click="Button_Browse_Click" HorizontalAlignment="Right" Width="75"/>
+        <Label Content="保存先" Margin="0,10,179,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120"/>
+        <Label x:Name="label_Message" Content="" Margin="10,0,115,10" Height="26" VerticalAlignment="Bottom"/>
 
 
     </Grid>

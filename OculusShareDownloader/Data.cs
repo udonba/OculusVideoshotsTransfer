@@ -46,7 +46,9 @@ namespace OculusShareDownloader
             string[] s = Path.GetFileNameWithoutExtension(fileName).Split('-');
             if (s.Length == 3 && DateTime.TryParseExact(s[1] + s[2], "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out DateTime date))
             {
+#if DEBUG
                 Console.WriteLine(string.Format("[{0}] -> [{1}]", fileName, date));
+#endif
                 return date;
             }
             return new DateTime();

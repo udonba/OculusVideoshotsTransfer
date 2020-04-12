@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static OculusShareDownloader.Extension;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace OculusShareDownloader
 {
@@ -29,18 +19,18 @@ namespace OculusShareDownloader
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var name = GetDeviceNameTest();
-            if (name != "")
-            {
-                GetScreenshotsTest(name);
-                GetVideoshotsTest(name);
-            }
+            this.textBox_Path.Text = Downloader.DefaultSaveDirectoryPath;
 
             Button_Click(button_UpdateDevices, new RoutedEventArgs());
         }
 
         #region events
 
+        /// <summary>
+        /// 更新ボタンクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // 更新前のデバイスが更新後も存在するなら、そのデバイスを選択したままにする
@@ -68,55 +58,79 @@ namespace OculusShareDownloader
                     comboBox_Devices.SelectedIndex = 0;
                 }
             }
+            else
+            {
+                comboBox_Devices.SelectedIndex = 0;
+            }
         }
 
+        /// <summary>
+        /// 参照ボタンクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Browse_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog("ファイルを保存するフォルダを選択");
+            dialog.Multiselect = false;
+            dialog.DefaultDirectory = Downloader.DefaulFolderSelectDirectry;
+            dialog.IsFolderPicker = true;
+
+            if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+                return;
+
+            // 選択したフォルダパスを表示
+            this.textBox_Path.Text = dialog.FileName.ReplaceSeparatorChar(replaceToSlash: true);
+            this.textBox_Path.Focus();
+            this.textBox_Path.Select(textBox_Path.Text.Length, 0);
+        }
+
+        /// <summary>
+        /// デバイス一覧コンボボックス選択変更
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ComboBox_Devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+#if DEBUG
             var control = e.Source as ComboBox;
             var item = control.SelectedItem == null ? "null" : control.SelectedItem.ToString();
             Console.WriteLine("SelectionChanged: " + item);
-
+#endif
             if (((ComboBox)e.Source).SelectedItem != null && dataGrid != null)
             {
                 UpdateDataGrid();
             }
         }
 
-        #endregion
-
-        private string GetDeviceNameTest()
+        /// <summary>
+        /// DataGridダブルクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine("Get device names...");
-            var lines = Downloader.GetDevices();
-            for (int i = 0; i < lines.Length; i++)
-            {
-                Console.WriteLine(lines[i]);
-            }
-            if (lines.Length != 0)
-                return lines[0];
-            else
-                return "";
+            if (dataGrid.SelectedItems.Count != 0)
+                DownloadSelectedFile();
         }
 
-        private void GetScreenshotsTest(string deviceName = "")
+        /// <summary>
+        /// キー押下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Console.WriteLine("Get screenshots...");
-            var lines = Downloader.GetFiles(Downloader.ScreenshotsDirectoryPath, deviceName);
-            for (int i = 0; i < lines.Length; i++)
+            if ((e.Key.Equals(Key.Enter)) || (e.Key.Equals(Key.Return)))
             {
-                Console.WriteLine(lines[i]);
+                e.Handled = true; // CurrnetCell移動防止
+
+                if (dataGrid.SelectedItems.Count != 0)
+                    DownloadSelectedFile();
             }
         }
 
-        private void GetVideoshotsTest(string deviceName = "")
-        {
-            Console.WriteLine("Get videoshots...");
-            var lines = Downloader.GetFiles(Downloader.VideoshotsDirectoryPath, deviceName);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                Console.WriteLine(lines[i]);
-            }
-        }
+#endregion
 
         private string[] GetDevicesItemSource()
         {
@@ -147,61 +161,99 @@ namespace OculusShareDownloader
             Array.Sort(data, Data.CompareByDateStringDesc);
 
             dataGrid.ItemsSource = data;
-        }
 
-        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            DownloadSelectedFile();
-        }
-
-        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if ((e.Key.Equals(Key.Enter)) || (e.Key.Equals(Key.Return)))
-            {
-                e.Handled = true;
-
-                DownloadSelectedFile();
-            }
+            this.label_Message.Content = string.Empty;
         }
 
         private async void DownloadSelectedFile()
         {
-            
             string[] files = new string[dataGrid.SelectedItems.Count];
-
             for (int i = 0; i < dataGrid.SelectedItems.Count; i++)
             {
                 var data = (Data)dataGrid.SelectedItems[i];
                 files[i] = data.FilePath;
             }
-
+#if DEBUG
             Console.WriteLine("---------------------------------------------");
             for (int i = 0; i < files.Length; i++)
             {
-                Console.WriteLine(string.Format("TargetFiles[{0}]: {1}", i, files[i]));
+                Console.WriteLine(string.Format("Targets[{0}]: {1}", i, files[i]));
+            }
+            Console.WriteLine(string.Format("Start file transfer... ({0} files)", files.Length));
+#endif
+
+            this.progressBar.Maximum = files.Length;
+            this.progressBar.Value = 0;
+            var progress = new Progress<int>(ShowProgress);
+
+            string saveDir = this.textBox_Path.Text;
+
+            try
+            {
+                FreezeControls(true);
+
+                if (!Directory.Exists(saveDir))
+                {
+#if DEBUG
+                    Console.WriteLine(string.Format("フォルダ[{0}]は存在しません。作成します。", saveDir));
+#endif
+                    Directory.CreateDirectory(saveDir);
+                }
+
+                await Downloader.DownloadFiles(progress, files, saveDir);
+
+                this.label_Message.Content = string.Format("{0} 個のファイル転送が完了しました。", files.Length);
+            }
+            catch(Exception ex)
+            {
+                this.label_Message.Content = string.Format("ERROR: {0}", ex);
+#if DEBUG
+                Console.WriteLine(ex);
+#endif
+                return;
+            }
+            finally
+            {
+                FreezeControls(false);
             }
 
-            Console.WriteLine(string.Format("Start downloading... ({0} files)", files.Length));
+            // 保存先を開く
+            string path = $"{saveDir}/{Path.GetFileName(files[0])}";
+            Downloader.OpenDirectory(path);
 
-            SetControllsInProgress(true);
-
-            await Downloader.DownloadFiles(files);
-
-            SetControllsInProgress(false);
-
-            Console.WriteLine("Download done.");
-
+#if DEBUG
+            Console.WriteLine("Completed.");
+#endif
         }
 
-        private void SetControllsInProgress(bool inProgress)
+        /// <summary>
+        /// 処理中に触ってほしくないコントロールを無効にする
+        /// </summary>
+        /// <param name="inProgress"></param>
+        private void FreezeControls(bool inProgress)
         {
             this.comboBox_Devices.IsEnabled = !inProgress;
             this.button_UpdateDevices.IsEnabled = !inProgress;
             this.dataGrid.IsEnabled = !inProgress;
+            this.button_Browse.IsEnabled = !inProgress;
+            this.textBox_Path.IsEnabled = !inProgress;
 
             this.progressBar.IsEnabled = inProgress;
-            this.progressBar.IsIndeterminate = inProgress;
+            
+            if (!inProgress)
+            {
+                this.progressBar.Value = 0;
+            }
         }
 
+        /// <summary>
+        /// 進捗表示の更新
+        /// </summary>
+        /// <param name="done"></param>
+        private void ShowProgress(int done)
+        {
+            this.label_Message.Content = string.Format("ファイルを転送中... ({0} / {1})", done, this.progressBar.Maximum);
+            this.progressBar.Value = done;
+        }
     }
 }
