@@ -20,9 +20,17 @@ namespace OculusShareDownloader
         {
             this.textBox_Path.Text = Downloader.DefaultSaveDirectoryPath;
 
-            Button_Click(button_UpdateDevices, new RoutedEventArgs());
+            try
+            {
+                Button_Click(button_UpdateDevices, new RoutedEventArgs());
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                MessageBox.Show("adb.exeが見つかりません。\nSystem.ComponentModel.Win32Exception", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                                
+                this.Close();
+            }
         }
-
         #region events
 
         /// <summary>
